@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, Outlet, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams, Link, Outlet, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styles from './MovieDetailsPage.module.css';
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
   const [movie, setMovie] = useState(null);
-  const navigate = useNavigate();
+  const location = useLocation();
+  const previousLocation = useRef(location.state?.from || '/movies');
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -32,13 +33,9 @@ const MovieDetailsPage = () => {
     return <div>Loading...</div>;
   }
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   return (
     <div className={styles.container}>
-      <button onClick={handleGoBack}>Go back</button>
+      <Link to={previousLocation.current}>Go back</Link>
       <h1>{movie.title}</h1>
       <img
         src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
